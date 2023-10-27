@@ -4,15 +4,11 @@ import ContactForm from './Contacts/ContactForm';
 import Filter from './Contacts/Filter';
 import ContactList from './Contacts/ContactList';
 import css from '../components/Contacts/Contacts.module.css';
+import { loadContacts, saveContacts } from './local';
 
 export default class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
   };
 
@@ -22,16 +18,13 @@ export default class App extends Component {
 
   componentDidMount() {
     const { contacts } = this.state;
-    const stringifiedContacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(stringifiedContacts) ?? contacts;
-
-    this.setState({ contacts: parsedContacts });
+    const loadedContacts = loadContacts(contacts);
+    this.setState({ contacts: loadedContacts });
   }
 
   componentDidUpdate(_, prevState) {
     if (prevState.contacts !== this.state.contacts) {
-      const stringifiedContacts = JSON.stringify(this.state.contacts);
-      localStorage.setItem('contacts', stringifiedContacts);
+      saveContacts(this.state.contacts);
     }
   }
 
