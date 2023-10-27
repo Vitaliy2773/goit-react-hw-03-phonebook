@@ -20,6 +20,21 @@ export default class App extends Component {
     this.setState({ filter: e.currentTarget.value });
   };
 
+  componentDidMount() {
+    const { contacts } = this.state;
+    const stringifiedContacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(stringifiedContacts) ?? contacts;
+
+    this.setState({ contacts: parsedContacts });
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      const stringifiedContacts = JSON.stringify(this.state.contacts);
+      localStorage.setItem('contacts', stringifiedContacts);
+    }
+  }
+
   handleSubmit = (contactName, contactNumber) => {
     const { contacts } = this.state;
 
